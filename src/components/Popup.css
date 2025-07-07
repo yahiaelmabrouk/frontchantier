@@ -1,0 +1,195 @@
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 15px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.popup-title {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 18px;
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6c757d;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.popup-close:hover {
+  background-color: #f8f9fa;
+}
+
+.popup-content {
+  padding: 20px;
+}
+
+.popup-actions {
+  padding: 15px 20px 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  border-top: 1px solid #dee2e6;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #545b62;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.popup-container.warning .popup-header {
+  background-color: #fff3cd;
+  border-bottom-color: #ffeaa7;
+}
+
+.popup-container.error .popup-header {
+  background-color: #f8d7da;
+  border-bottom-color: #f5c6cb;
+}
+
+.popup-container.success .popup-header {
+  background-color: #d4edda;
+  border-bottom-color: #c3e6cb;
+}
+
+.delete-confirmation {
+  text-align: center;
+}
+
+.chantier-name {
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.warning-text {
+  color: #dc3545;
+  font-weight: 500;
+  margin-top: 15px;
+}
+
+.popup-chantier-details p {
+  margin: 0 0 12px 0;
+}
+
+.chantier-info {
+  background-color: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.chantier-info p {
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #495057;
+  min-width: 140px;
+}
+
+.popup-error p {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.delete-confirmation {
+  text-align: center;
+}
+
+.delete-confirmation .chantier-name {
+  font-weight: bold;
+  color: #dc3545;
+  margin: 10px 0;
+  font-size: 1.1rem;
+}
+
+.delete-confirmation .warning-text {
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 16px;
+  border-left: 4px solid #ffc107;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
