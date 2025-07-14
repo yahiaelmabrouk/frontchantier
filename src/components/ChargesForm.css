@@ -264,6 +264,80 @@
   cursor: not-allowed;
 }
 
+.services-form,
+.interim-form,
+.achat-form {
+  background: #f4f8fb;
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 20px;
+  border: 1px solid #e3eaf3;
+}
+
+.subform-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1976d2;
+  margin-bottom: 12px;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.services-total,
+.interim-total,
+.achat-total {
+  font-size: 16px;
+  font-weight: 600;
+  color: #27ae60;
+  margin: 12px 0;
+}
+
+.interim-row,
+.achat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 12px;
+  align-items: end;
+}
+
+.interim-table,
+.achat-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 8px;
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.interim-table th,
+.interim-table td,
+.achat-table th,
+.achat-table td {
+  border: 1px solid #dee2e6;
+  padding: 8px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.interim-table th,
+.achat-table th {
+  background: #e3f2fd;
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.interim-list,
+.achat-list {
+  margin-top: 10px;
+}
+
 @media (max-width: 768px) {
   .charge-details-grid {
     grid-template-columns: 1fr;
@@ -313,6 +387,13 @@
   .form-row {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+
+  .services-grid,
+  .interim-row,
+  .achat-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
 }
 

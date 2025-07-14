@@ -527,3 +527,218 @@ body {
     flex-direction: column;
   }
 }
+
+/* Search and Filter Styles */
+.chantier-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.chantier-search-input {
+  padding: 0.7rem 1.1rem;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  font-size: 1rem;
+  min-width: 220px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  background: #f7f7fb;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07);
+}
+
+.chantier-search-input:focus {
+  border-color: #764ba2;
+  box-shadow: 0 0 0 2px #764ba230;
+}
+
+.chantier-filter-select {
+  padding: 0.7rem 1.1rem;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f7f7fb;
+  color: #333;
+  min-width: 180px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07);
+  cursor: pointer;
+  /* Add margin for spacing */
+  margin-left: 0.5rem;
+}
+
+/* Responsive for controls */
+@media (max-width: 600px) {
+  .chantier-controls {
+    flex-direction: column;
+    gap: 0.7rem;
+    margin: 1.2rem 0 1rem 0;
+  }
+  .chantier-search-input,
+  .chantier-filter-select {
+    min-width: 95vw;
+    font-size: 0.98rem;
+  }
+}
+
+/* Chantiers Table Styles */
+.chantier-table-wrapper {
+  margin: 2rem auto;
+  max-width: 1200px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.09);
+  padding: 1.5rem 1rem;
+  overflow-x: auto;
+}
+
+.chantier-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background: transparent;
+}
+
+.chantier-table th,
+.chantier-table td {
+  padding: 0.85rem 0.7rem;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.chantier-table th {
+  background: #f7f7fb;
+  color: #667eea;
+  font-weight: 600;
+  font-size: 1.05rem;
+  border-bottom: 2px solid #e1e1e1;
+}
+
+.chantier-table tr:nth-child(even) {
+  background: #f9f9fc;
+}
+
+.chantier-table td {
+  color: #333;
+  font-size: 0.98rem;
+}
+
+.chantier-table .chantier-etat {
+  padding: 0.35rem 0.9rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.97rem;
+  display: inline-block;
+}
+
+.chantier-table .chantier-etat.active {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #1976d2;
+}
+
+.chantier-table .chantier-etat.closed {
+  background: #fff0f0;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.chantier-table .btn-sm {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  margin-right: 0.3rem;
+}
+
+.chantier-table .btn-edit {
+  background: #28a745;
+  color: #fff;
+  border: none;
+}
+
+.chantier-table .btn-edit:hover {
+  background: #218838;
+}
+
+.chantier-table .btn-charges {
+  background: #f7f7fb;
+  color: #667eea;
+  border: 1px solid #667eea;
+}
+
+.chantier-table .btn-charges:hover {
+  background: #667eea;
+  color: #fff;
+}
+
+.chantier-table .btn-delete {
+  background: #fff0f0;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.chantier-table .btn-delete:hover {
+  background: #dc3545;
+  color: #fff;
+}
+
+.chantier-table .btn-close {
+  background: #ffc107;
+  color: #333;
+  border: 1px solid #ffc107;
+}
+
+.chantier-table .btn-close:hover {
+  background: #e0a800;
+  color: #fff;
+}
+
+.chantier-table .btn-invoice {
+  background: #ffd700;
+  color: #333;
+  border: 1px solid #ffd700;
+  margin-left: 0.3rem;
+}
+
+.chantier-table .btn-invoice:hover {
+  background: #ffe066;
+  color: #333;
+}
+
+/* Responsive for table */
+@media (max-width: 900px) {
+  .chantier-table-wrapper {
+    padding: 1rem 0.2rem;
+    max-width: 98vw;
+  }
+  .chantier-table th,
+  .chantier-table td {
+    padding: 0.6rem 0.3rem;
+    font-size: 0.97rem;
+  }
+  .chantier-table .btn-sm {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.93rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .chantier-table-wrapper {
+    padding: 0.5rem 0.1rem;
+    max-width: 100vw;
+  }
+  .chantier-table th,
+  .chantier-table td {
+    padding: 0.4rem 0.1rem;
+    font-size: 0.95rem;
+  }
+  .chantier-table .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+  }
+}

@@ -17,6 +17,7 @@ const ChantierForm = () => {
     natureTravail: "",
     nomChantier: "",
     dateCreation: new Date().toISOString().split("T")[0],
+    etat: "en cours",
   });
 
   const [loading, setLoading] = useState(false);
@@ -43,6 +44,7 @@ const ChantierForm = () => {
         dateCreation: new Date(chantier.dateCreation)
           .toISOString()
           .split("T")[0],
+        etat: chantier.etat || "en cours",
       });
     } catch (error) {
       console.error("Error fetching chantier:", error);
@@ -250,6 +252,20 @@ const ChantierForm = () => {
             onChange={handleChange}
             className="form-input"
           />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">État du chantier</label>
+          <select
+            name="etat"
+            value={formData.etat}
+            onChange={handleChange}
+            className="form-input"
+            disabled={!isEditing}
+          >
+            <option value="en cours">En cours</option>
+            <option value="fermé">Fermé</option>
+          </select>
         </div>
 
         <div className="form-actions">

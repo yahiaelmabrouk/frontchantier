@@ -12,7 +12,14 @@ const ChantierList = () => {
     isOpen: false,
     chantier: null,
   });
-  const itemsPerPage = 6;
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("actifs");
+  const [dateFilter, setDateFilter] = useState(""); // Add this state
+  const [invoicePopup, setInvoicePopup] = useState({
+    isOpen: false,
+    chantier: null,
+  });
+  const itemsPerPage = 9;
 
   const API_URL = process.env.REACT_APP_API_URL;
 
@@ -61,19 +68,71 @@ const ChantierList = () => {
     setDeletePopup({ isOpen: false, chantier: null });
   };
 
-  // Pagination logic
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleCloseChantier = async (id) => {
+    try {
+      await axios.patch(`${API_URL}/api/chantiers/${id}/close`);
+      setChantiers((prev) =>
+        prev.map((c) => (c._id === id ? { ...c, etat: "fermé" } : c))
+      );
+    } catch (error) {
+      alert("Erreur lors de la fermeture du chantier.");
+    }
+  };
+
+  // Add handler for invoice button
+  const handleInvoiceClick = (chantier) => {
+    setInvoicePopup({
+      isOpen: true,
+      chantier,
+    });
+  };
+
+  const closeInvoicePopup = () => {
+    setInvoicePopup({ isOpen: false, chantier: null });
+  };
+
+  // Filter and search logic
+  const filteredChantiers = chantiers.filter((c) => {
+    const matchesSearch = c.nomChantier
+      .toLowerCase()
+      .includes(search.toLowerCase());
+    if (filter === "actifs") {
+      return c.etat !== "fermé" && matchesSearch;
+    }
+    return matchesSearch;
+  });
+
+  // Filter chantiers by date
+  const dateFilteredChantiers = dateFilter
+    ? filteredChantiers.filter(
+        (chantier) =>
+          chantier.dateCreation &&
+          new Date(chantier.dateCreation).toISOString().split("T")[0] ===
+            dateFilter
+      )
+    : filteredChantiers;
+
+  // Pagination for active chantiers
+  const activeChantiers = dateFilteredChantiers.filter(
+    (c) => c.etat !== "fermé"
+  );
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentChantiers = chantiers.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(chantiers.length / itemsPerPage);
-
-  const goToNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  };
-
-  const goToPrevPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
+  const currentActiveChantiers = activeChantiers.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(activeChantiers.length / itemsPerPage);
 
   if (loading) {
     return <div className="loading">Chargement des chantiers...</div>;
@@ -94,7 +153,45 @@ const ChantierList = () => {
         </Link>
       </div>
 
-      {chantiers.length === 0 ? (
+      <div className="chantier-controls">
+        <input
+          type="text"
+          placeholder="Rechercher par nom..."
+          value={search}
+          onChange={handleSearchChange}
+          className="chantier-search-input"
+        />
+        <select
+          value={filter}
+          onChange={handleFilterChange}
+          className="chantier-filter-select"
+        >
+          <option value="actifs">Chantiers actifs</option>
+          <option value="tous">Tous les chantiers</option>
+        </select>
+      </div>
+
+      {/* Date Filter */}
+      <div className="chantier-controls">
+        <label
+          htmlFor="date-filter"
+          style={{ fontWeight: 500, color: "#667eea" }}
+        >
+          Filtrer par date de création :
+        </label>
+        <input
+          id="date-filter"
+          type="date"
+          className="chantier-filter-select"
+          value={dateFilter}
+          onChange={(e) => {
+            setDateFilter(e.target.value);
+            setCurrentPage(1);
+          }}
+        />
+      </div>
+
+      {dateFilteredChantiers.length === 0 ? (
         <div className="empty-state">
           <h3>Aucun chantier trouvé</h3>
           <p>Commencez par ajouter votre premier chantier</p>
@@ -106,14 +203,87 @@ const ChantierList = () => {
             Ajouter un Chantier
           </Link>
         </div>
+      ) : filter === "tous" ? (
+        <div className="chantier-table-wrapper">
+          <table className="chantier-table">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>N° Attachement</th>
+                <th>Client</th>
+                <th>Lieu</th>
+                <th>Nature</th>
+                <th>Date création</th>
+                <th>État</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dateFilteredChantiers.map((chantier) => (
+                <tr key={chantier._id}>
+                  <td>{chantier.nomChantier}</td>
+                  <td>{chantier.numAttachement}</td>
+                  <td>{chantier.client}</td>
+                  <td>{chantier.lieuExecution}</td>
+                  <td>{chantier.natureTravail}</td>
+                  <td>
+                    {new Date(chantier.dateCreation).toLocaleDateString(
+                      "fr-FR"
+                    )}
+                  </td>
+                  <td>
+                    <span
+                      className={
+                        chantier.etat === "fermé"
+                          ? "chantier-etat closed"
+                          : "chantier-etat active"
+                      }
+                    >
+                      {chantier.etat}
+                    </span>
+                  </td>
+                  <td>
+                    <Link
+                      to={`/edit/${chantier._id}`}
+                      className="btn btn-edit btn-sm"
+                    >
+                      ✏️
+                    </Link>
+                    <Link
+                      to={`/charges/${chantier._id}`}
+                      className="btn btn-charges btn-sm"
+                    >
+                      💰
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(chantier._id)}
+                      className="btn btn-delete btn-sm"
+                    >
+                      🗑️
+                    </button>
+                    {chantier.etat === "fermé" && (
+                      <button
+                        className="btn btn-sm btn-invoice"
+                        onClick={() => handleInvoiceClick(chantier)}
+                      >
+                        🧾 Générer Facture
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <>
           <div className="chantier-grid">
-            {currentChantiers.map((chantier) => (
+            {currentActiveChantiers.map((chantier) => (
               <ChantierCard
                 key={chantier._id}
                 chantier={chantier}
                 onDelete={handleDelete}
+                onClose={handleCloseChantier}
               />
             ))}
           </div>
@@ -122,7 +292,7 @@ const ChantierList = () => {
             <div className="pagination">
               <button
                 className="pagination-btn"
-                onClick={goToPrevPage}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
               >
                 ← Précédent
@@ -134,7 +304,9 @@ const ChantierList = () => {
 
               <button
                 className="pagination-btn"
-                onClick={goToNextPage}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
                 disabled={currentPage === totalPages}
               >
                 Suivant →
@@ -160,6 +332,21 @@ const ChantierList = () => {
             </div>
           )}
           <div className="warning-text">⚠️ Cette action est irréversible !</div>
+        </div>
+      </Popup>
+
+      <Popup
+        isOpen={invoicePopup.isOpen}
+        onClose={closeInvoicePopup}
+        title="Génération de facture"
+        type="info"
+      >
+        <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
+          <p style={{ fontSize: "1.15rem", color: "#667eea", fontWeight: 500 }}>
+            Travail en cours...
+            <br />
+            La génération de facture sera bientôt disponible.
+          </p>
         </div>
       </Popup>
     </div>

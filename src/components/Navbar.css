@@ -1,0 +1,184 @@
+.navbar {
+  background-color: #007bff;
+  color: #fff;
+  padding: 0.5rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+}
+
+.navbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 2.5rem;
+}
+
+.navbar-logo {
+  font-size: 1.3rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.navbar-brand {
+  font-size: 1.3rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #fff;
+  text-decoration: none;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+  margin-right: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.navbar-nav {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.2s;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+}
+
+.navbar-link:hover,
+.navbar-link.active {
+  background: rgba(255, 255, 255, 0.13);
+  color: #e2e6ea;
+}
+
+/* Remove or comment out dropdown-specific styles */
+/*.navbar-salarie {
+  position: relative;
+}
+
+.navbar-salarie-btn {
+  background: none;
+  border: none;
+  color: #000;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s, background 0.2s;
+}
+
+.navbar-salarie-btn:hover,
+.navbar-salarie-btn:focus {
+  background: rgba(255, 255, 255, 0.13);
+  color: #e2e6ea;
+  outline: none;
+}
+
+.arrow {
+  margin-left: 6px;
+  font-size: 0.8em;
+}
+
+.salarie-modal {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  min-width: 160px;
+  background: #fff;
+  color: #333;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.13);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  animation: fadeInScale 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.salarie-modal-item {
+  background: none;
+  border: none;
+  color: #333;
+  text-align: left;
+  padding: 12px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.18s;
+}
+
+.salarie-modal-item:hover {
+  background: #f1f3f7;
+  color: #007bff;
+}*/
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem 0.7rem;
+  }
+  .navbar-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+  .navbar-links {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .navbar-nav {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  /* .salarie-modal {
+    right: 8px;
+    top: 48px;
+    min-width: 130px;
+  }
+  .salarie-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+  .navbar-salarie-btn {
+    width: 100%;
+    justify-content: flex-start;
+  } */
+}

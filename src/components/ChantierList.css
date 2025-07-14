@@ -1,0 +1,70 @@
+.chantier-controls {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.chantier-search-input {
+  padding: 0.7rem 1.1rem;
+  border: 1.5px solid #667eea;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+  background: #f7f7fb;
+  color: #333;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 220px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07);
+}
+
+.chantier-search-input:focus {
+  border-color: #764ba2;
+  outline: none;
+  box-shadow: 0 0 0 2px #764ba233;
+}
+
+.chantier-filter-select {
+  padding: 0.7rem 1.1rem;
+  border: 1.5px solid #667eea;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+  background: #f7f7fb;
+  color: #333;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 180px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07);
+  appearance: none;
+  cursor: pointer;
+}
+
+.chantier-filter-select:focus {
+  border-color: #764ba2;
+  outline: none;
+  box-shadow: 0 0 0 2px #764ba233;
+}
+
+/* Custom arrow for select */
+.chantier-filter-select {
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .chantier-controls {
+    flex-direction: column;
+    gap: 0.7rem;
+    align-items: stretch;
+  }
+  .chantier-search-input,
+  .chantier-filter-select {
+    min-width: 100%;
+    font-size: 1rem;
+  }
+}

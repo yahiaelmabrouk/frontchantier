@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const ChantierCard = ({ chantier, onDelete }) => {
+const ChantierCard = ({ chantier, onDelete, onClose }) => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("fr-FR");
   };
@@ -10,6 +10,15 @@ const ChantierCard = ({ chantier, onDelete }) => {
     <div className="chantier-card">
       <div className="chantier-header">
         <h3 className="chantier-title">{chantier.nomChantier}</h3>
+        <span
+          className={
+            chantier.etat === "fermé"
+              ? "chantier-etat closed"
+              : "chantier-etat active"
+          }
+        >
+          {chantier.etat}
+        </span>
       </div>
 
       <div className="chantier-details">
@@ -50,6 +59,14 @@ const ChantierCard = ({ chantier, onDelete }) => {
         >
           🗑️ Supprimer
         </button>
+        {chantier.etat !== "fermé" && (
+          <button
+            onClick={() => onClose(chantier._id)}
+            className="btn btn-close"
+          >
+            Fermer le chantier
+          </button>
+        )}
       </div>
     </div>
   );

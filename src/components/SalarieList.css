@@ -1,0 +1,245 @@
+.salarie-list-container {
+  max-width: 500px;
+  margin: 2.5rem auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.13);
+  padding: 1.5rem 1rem;
+  animation: fadeInList 0.3s;
+}
+
+@keyframes fadeInList {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.salarie-list-title {
+  text-align: center;
+  color: #667eea;
+  margin-bottom: 1.3rem;
+  font-size: 1.3rem;
+}
+
+.salarie-list-table-wrapper {
+  overflow-x: auto;
+}
+
+.salarie-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.salarie-list-table th,
+.salarie-list-table td {
+  padding: 0.7rem 0.5rem;
+  text-align: left;
+}
+
+.salarie-list-table th {
+  background: #f7f7fb;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.salarie-list-table tr:nth-child(even) {
+  background: #f9f9fc;
+}
+
+.salarie-list-table td {
+  color: #333;
+}
+
+.salarie-action-btn {
+  padding: 0.35rem 0.9rem;
+  margin-right: 0.4rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.97rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+}
+
+.salarie-action-btn.edit {
+  background: #f7f7fb;
+  color: #667eea;
+  border: 1px solid #667eea;
+}
+
+.salarie-action-btn.edit:hover {
+  background: #667eea;
+  color: #fff;
+}
+
+.salarie-action-btn.delete {
+  background: #fff0f0;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.salarie-action-btn.delete:hover {
+  background: #dc3545;
+  color: #fff;
+}
+
+.salarie-edit-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(60, 60, 60, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.salarie-edit-form {
+  background: #fff;
+  padding: 2rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.13);
+  min-width: 320px;
+  max-width: 95vw;
+  width: 350px;
+  animation: slideInForm 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.salarie-edit-form h3 {
+  text-align: center;
+  color: #667eea;
+  margin-bottom: 1.2rem;
+  font-size: 1.1rem;
+}
+
+.salarie-edit-form .form-group {
+  margin-bottom: 1.1rem;
+}
+
+.salarie-edit-form label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.salarie-edit-form input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1.5px solid #e1e1e1;
+  border-radius: 7px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.salarie-edit-form input:focus {
+  border-color: #667eea;
+  outline: none;
+}
+
+.salarie-edit-form .form-error {
+  color: #dc3545;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.salarie-edit-form .form-actions {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  margin-top: 1.2rem;
+}
+
+.salarie-edit-form .btn {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.salarie-edit-form .btn-cancel {
+  background: #6c757d;
+  color: #fff;
+}
+
+.salarie-edit-form .btn-cancel:hover {
+  background: #545b62;
+}
+
+.salarie-edit-form .btn-primary {
+  background: #667eea;
+  color: #fff;
+}
+
+.salarie-edit-form .btn-primary:hover {
+  background: #5a67d8;
+}
+
+.delete-salarie-confirmation {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.salarie-info-popup {
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 16px 0 10px 0;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07);
+}
+
+.popup-label {
+  font-weight: 600;
+  color: #495057;
+  min-width: 110px;
+  display: inline-block;
+}
+
+.popup-value {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.popup-warning-text {
+  color: #dc3545;
+  font-weight: 500;
+  margin-top: 18px;
+  background: #fff3cd;
+  padding: 10px;
+  border-radius: 6px;
+  border-left: 4px solid #ffc107;
+  display: inline-block;
+  font-size: 0.98rem;
+}
+
+@media (max-width: 600px) {
+  .salarie-list-container {
+    padding: 1rem 0.3rem;
+    min-width: 95vw;
+  }
+  .salarie-list-title {
+    font-size: 1.1rem;
+  }
+  .salarie-list-table th,
+  .salarie-list-table td {
+    padding: 0.5rem 0.2rem;
+    font-size: 0.97rem;
+  }
+}

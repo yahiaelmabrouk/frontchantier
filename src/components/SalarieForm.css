@@ -1,0 +1,121 @@
+.salarie-form-modal {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  animation: fadeInBg 0.3s;
+}
+
+@keyframes fadeInBg {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.salarie-form {
+  background: #fff;
+  padding: 2rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.13);
+  min-width: 320px;
+  max-width: 95vw;
+  width: 350px;
+  animation: slideInForm 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInForm {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.salarie-form h2 {
+  text-align: center;
+  color: #667eea;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.form-group {
+  margin-bottom: 1.1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1.5px solid #e1e1e1;
+  border-radius: 7px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  border-color: #667eea;
+  outline: none;
+}
+
+.form-error {
+  color: #dc3545;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  margin-top: 1.2rem;
+}
+
+.btn {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.btn-cancel {
+  background: #6c757d;
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background: #545b62;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #5a67d8;
+}
+
+@media (max-width: 480px) {
+  .salarie-form {
+    padding: 1.2rem 0.7rem;
+    min-width: 90vw;
+    width: 98vw;
+  }
+}

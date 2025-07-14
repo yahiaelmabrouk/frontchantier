@@ -13,6 +13,31 @@ const ChargesForm = () => {
   const [charges, setCharges] = useState([]);
   const [chantier, setChantier] = useState(null);
 
+  // New states for dynamic forms
+  const [servicesData, setServicesData] = useState({
+    "Locations de matériel": 0,
+    Echafaudage: 0,
+    Levage: 0,
+    Transport: 0,
+    "Sous-traitant": 0,
+    Voirie: 0,
+    "Divers 1": 0,
+    "Divers 2": 0,
+  });
+  const [interimOuvriers, setInterimOuvriers] = useState([]);
+  const [interimForm, setInterimForm] = useState({
+    nom: "",
+    heures: "",
+    taux: "",
+  });
+  const [achatsPieces, setAchatsPieces] = useState([]);
+  const [achatForm, setAchatForm] = useState({
+    fournisseur: "",
+    piece: "",
+    prix: "",
+    quantite: "",
+  });
+
   const chargeTypes = [
     "Achat",
     "Services extérieurs",
@@ -56,22 +81,135 @@ const ChargesForm = () => {
     setChargeName("");
     setBudget("");
     setDescription("");
+    setServicesData({
+      "Locations de matériel": 0,
+      Echafaudage: 0,
+      Levage: 0,
+      Transport: 0,
+      "Sous-traitant": 0,
+      Voirie: 0,
+      "Divers 1": 0,
+      "Divers 2": 0,
+    });
+    setInterimOuvriers([]);
+    setInterimForm({ nom: "", heures: "", taux: "" });
+    setAchatsPieces([]);
+    setAchatForm({ fournisseur: "", piece: "", prix: "", quantite: "" });
   };
 
-  const handleSaveCharge = async () => {
-    if (!selectedChargeType || !chargeName || !budget) {
-      alert("Veuillez remplir tous les champs obligatoires");
-      return;
-    }
+  // --- Services extérieurs handlers ---
+  const handleServicesChange = (key, value) => {
+    setServicesData((prev) => ({
+      ...prev,
+      [key]: Number(value),
+    }));
+  };
+  const servicesTotal = Object.values(servicesData).reduce((a, b) => a + b, 0);
 
-    const newCharge = {
-      chantierId: id,
-      type: selectedChargeType,
-      customType: selectedChargeType === "Autre" ? customChargeType : undefined,
-      name: chargeName,
-      budget: parseFloat(budget),
-      description,
-    };
+  // --- Interim handlers ---
+  const handleInterimFormChange = (e) => {
+    setInterimForm({
+      ...interimForm,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const addInterimOuvrier = () => {
+    if (
+      interimForm.nom &&
+      interimForm.heures &&
+      interimForm.taux &&
+      !isNaN(Number(interimForm.heures)) &&
+      !isNaN(Number(interimForm.taux))
+    ) {
+      setInterimOuvriers([
+        ...interimOuvriers,
+        {
+          ...interimForm,
+          heures: Number(interimForm.heures),
+          taux: Number(interimForm.taux),
+          cout: Number(interimForm.heures) * Number(interimForm.taux),
+        },
+      ]);
+      setInterimForm({ nom: "", heures: "", taux: "" });
+    }
+  };
+  const interimTotal = interimOuvriers.reduce((sum, o) => sum + o.cout, 0);
+
+  // --- Achats handlers ---
+  const handleAchatFormChange = (e) => {
+    setAchatForm({
+      ...achatForm,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const addAchatPiece = () => {
+    if (
+      achatForm.fournisseur &&
+      achatForm.piece &&
+      achatForm.prix &&
+      achatForm.quantite &&
+      !isNaN(Number(achatForm.prix)) &&
+      !isNaN(Number(achatForm.quantite))
+    ) {
+      setAchatsPieces([
+        ...achatsPieces,
+        {
+          ...achatForm,
+          prix: Number(achatForm.prix),
+          quantite: Number(achatForm.quantite),
+          total: Number(achatForm.prix) * Number(achatForm.quantite),
+        },
+      ]);
+      setAchatForm({ fournisseur: "", piece: "", prix: "", quantite: "" });
+    }
+  };
+  const achatsTotal = achatsPieces.reduce((sum, p) => sum + p.total, 0);
+
+  // --- Save Charge ---
+  const handleSaveCharge = async () => {
+    let newCharge;
+    if (selectedChargeType === "Services extérieurs") {
+      newCharge = {
+        chantierId: id,
+        type: selectedChargeType,
+        name: "Services extérieurs",
+        budget: servicesTotal,
+        description,
+        details: { ...servicesData },
+      };
+    } else if (selectedChargeType === "Interim") {
+      newCharge = {
+        chantierId: id,
+        type: selectedChargeType,
+        name: "Interim",
+        budget: interimTotal,
+        description,
+        ouvriers: interimOuvriers,
+      };
+    } else if (selectedChargeType === "Achat") {
+      newCharge = {
+        chantierId: id,
+        type: selectedChargeType,
+        name: "Achat",
+        budget: achatsTotal,
+        description,
+        pieces: achatsPieces,
+      };
+    } else {
+      if (!selectedChargeType || !chargeName || !budget) {
+        alert("Veuillez remplir tous les champs obligatoires");
+        return;
+      }
+      newCharge = {
+        chantierId: id,
+        type: selectedChargeType,
+        customType:
+          selectedChargeType === "Autre" ? customChargeType : undefined,
+        name: chargeName,
+        budget: parseFloat(budget),
+        description,
+      };
+    }
 
     try {
       const response = await fetch(`${API_URL}/api/charges`, {
@@ -95,6 +233,20 @@ const ChargesForm = () => {
     setChargeName("");
     setBudget("");
     setDescription("");
+    setServicesData({
+      "Locations de matériel": 0,
+      Echafaudage: 0,
+      Levage: 0,
+      Transport: 0,
+      "Sous-traitant": 0,
+      Voirie: 0,
+      "Divers 1": 0,
+      "Divers 2": 0,
+    });
+    setInterimOuvriers([]);
+    setInterimForm({ nom: "", heures: "", taux: "" });
+    setAchatsPieces([]);
+    setAchatForm({ fournisseur: "", piece: "", prix: "", quantite: "" });
   };
 
   const deleteCharge = async (chargeId) => {
@@ -160,7 +312,6 @@ const ChargesForm = () => {
                 ))}
               </select>
             </div>
-
             {selectedChargeType === "Autre" && (
               <div className="form-group">
                 <label className="form-label">Type personnalisé *:</label>
@@ -175,55 +326,326 @@ const ChargesForm = () => {
             )}
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label">Nom de la charge *:</label>
-              <input
-                type="text"
-                placeholder="Ex: Matériaux, Personnel, Transport..."
-                value={chargeName}
-                onChange={(e) => setChargeName(e.target.value)}
-                className="form-input"
-              />
+          {/* Dynamic forms based on type */}
+          {selectedChargeType === "Services extérieurs" && (
+            <div className="services-form">
+              <h4 className="subform-title">Détails Services extérieurs</h4>
+              <div className="services-grid">
+                {Object.keys(servicesData).map((key) => (
+                  <div className="form-group" key={key}>
+                    <label className="form-label">{key}</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={servicesData[key]}
+                      onChange={(e) =>
+                        handleServicesChange(key, e.target.value)
+                      }
+                      className="form-input"
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="services-total">
+                <strong>Total: </strong>
+                <span>{servicesTotal.toFixed(2)} €</span>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Description (optionnel):</label>
+                <textarea
+                  placeholder="Description détaillée de la charge"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="form-textarea"
+                  rows="2"
+                />
+              </div>
+              <div className="form-actions">
+                <button
+                  onClick={handleSaveCharge}
+                  className="btn btn-primary"
+                  disabled={servicesTotal === 0}
+                >
+                  💾 Enregistrer la charge
+                </button>
+                <button onClick={resetForm} className="btn btn-secondary">
+                  🔄 Reset
+                </button>
+              </div>
             </div>
+          )}
 
-            <div className="form-group">
-              <label className="form-label">Budget *:</label>
-              <input
-                type="number"
-                placeholder="0.00"
-                step="0.01"
-                min="0"
-                value={budget}
-                onChange={(e) => setBudget(e.target.value)}
-                className="form-input"
-              />
+          {selectedChargeType === "Interim" && (
+            <div className="interim-form">
+              <h4 className="subform-title">Détails Interim</h4>
+              <div className="interim-row">
+                <div className="form-group">
+                  <label className="form-label">Nom de l'ouvrier</label>
+                  <input
+                    type="text"
+                    name="nom"
+                    value={interimForm.nom}
+                    onChange={handleInterimFormChange}
+                    className="form-input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Nombre d'heures</label>
+                  <input
+                    type="number"
+                    name="heures"
+                    min="0"
+                    value={interimForm.heures}
+                    onChange={handleInterimFormChange}
+                    className="form-input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Taux horaire (€)</label>
+                  <input
+                    type="number"
+                    name="taux"
+                    min="0"
+                    value={interimForm.taux}
+                    onChange={handleInterimFormChange}
+                    className="form-input"
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  style={{ alignSelf: "end", marginTop: "24px" }}
+                  onClick={addInterimOuvrier}
+                  disabled={
+                    !interimForm.nom || !interimForm.heures || !interimForm.taux
+                  }
+                >
+                  + Ajouter ouvrier
+                </button>
+              </div>
+              {interimOuvriers.length > 0 && (
+                <div className="interim-list">
+                  <table className="interim-table">
+                    <thead>
+                      <tr>
+                        <th>Nom</th>
+                        <th>Heures</th>
+                        <th>Taux</th>
+                        <th>Coût</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {interimOuvriers.map((o, idx) => (
+                        <tr key={idx}>
+                          <td>{o.nom}</td>
+                          <td>{o.heures}</td>
+                          <td>{o.taux}</td>
+                          <td>{o.cout.toFixed(2)} €</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="interim-total">
+                    <strong>Total: </strong>
+                    <span>{interimTotal.toFixed(2)} €</span>
+                  </div>
+                </div>
+              )}
+              <div className="form-group">
+                <label className="form-label">Description (optionnel):</label>
+                <textarea
+                  placeholder="Description détaillée de la charge"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="form-textarea"
+                  rows="2"
+                />
+              </div>
+              <div className="form-actions">
+                <button
+                  onClick={handleSaveCharge}
+                  className="btn btn-primary"
+                  disabled={interimOuvriers.length === 0}
+                >
+                  💾 Enregistrer la charge
+                </button>
+                <button onClick={resetForm} className="btn btn-secondary">
+                  🔄 Reset
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="form-group">
-            <label className="form-label">Description (optionnel):</label>
-            <textarea
-              placeholder="Description détaillée de la charge"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="form-textarea"
-              rows="3"
-            />
-          </div>
+          {selectedChargeType === "Achat" && (
+            <div className="achat-form">
+              <h4 className="subform-title">Détails Achats</h4>
+              <div className="achat-row">
+                <div className="form-group">
+                  <label className="form-label">Nom du fournisseur</label>
+                  <input
+                    type="text"
+                    name="fournisseur"
+                    value={achatForm.fournisseur}
+                    onChange={handleAchatFormChange}
+                    className="form-input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Nom de pièce</label>
+                  <input
+                    type="text"
+                    name="piece"
+                    value={achatForm.piece}
+                    onChange={handleAchatFormChange}
+                    className="form-input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Prix par pièce (€)</label>
+                  <input
+                    type="number"
+                    name="prix"
+                    min="0"
+                    value={achatForm.prix}
+                    onChange={handleAchatFormChange}
+                    className="form-input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Quantité</label>
+                  <input
+                    type="number"
+                    name="quantite"
+                    min="0"
+                    value={achatForm.quantite}
+                    onChange={handleAchatFormChange}
+                    className="form-input"
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  style={{ alignSelf: "end", marginTop: "24px" }}
+                  onClick={addAchatPiece}
+                  disabled={
+                    !achatForm.fournisseur ||
+                    !achatForm.piece ||
+                    !achatForm.prix ||
+                    !achatForm.quantite
+                  }
+                >
+                  + Ajouter pièce
+                </button>
+              </div>
+              {achatsPieces.length > 0 && (
+                <div className="achat-list">
+                  <table className="achat-table">
+                    <thead>
+                      <tr>
+                        <th>Fournisseur</th>
+                        <th>Pièce</th>
+                        <th>Prix</th>
+                        <th>Quantité</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {achatsPieces.map((p, idx) => (
+                        <tr key={idx}>
+                          <td>{p.fournisseur}</td>
+                          <td>{p.piece}</td>
+                          <td>{p.prix.toFixed(2)} €</td>
+                          <td>{p.quantite}</td>
+                          <td>{p.total.toFixed(2)} €</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="achat-total">
+                    <strong>Total: </strong>
+                    <span>{achatsTotal.toFixed(2)} €</span>
+                  </div>
+                </div>
+              )}
+              <div className="form-group">
+                <label className="form-label">Description (optionnel):</label>
+                <textarea
+                  placeholder="Description détaillée de la charge"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="form-textarea"
+                  rows="2"
+                />
+              </div>
+              <div className="form-actions">
+                <button
+                  onClick={handleSaveCharge}
+                  className="btn btn-primary"
+                  disabled={achatsPieces.length === 0}
+                >
+                  💾 Enregistrer la charge
+                </button>
+                <button onClick={resetForm} className="btn btn-secondary">
+                  🔄 Reset
+                </button>
+              </div>
+            </div>
+          )}
 
-          <div className="form-actions">
-            <button
-              onClick={handleSaveCharge}
-              className="btn btn-primary"
-              disabled={!selectedChargeType || !chargeName || !budget}
-            >
-              💾 Enregistrer la charge
-            </button>
-            <button onClick={resetForm} className="btn btn-secondary">
-              🔄 Reset
-            </button>
-          </div>
+          {/* Default form for other types */}
+          {selectedChargeType &&
+            selectedChargeType !== "Services extérieurs" &&
+            selectedChargeType !== "Interim" &&
+            selectedChargeType !== "Achat" && (
+              <>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Nom de la charge *:</label>
+                    <input
+                      type="text"
+                      placeholder="Ex: Matériaux, Personnel, Transport..."
+                      value={chargeName}
+                      onChange={(e) => setChargeName(e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Budget *:</label>
+                    <input
+                      type="number"
+                      placeholder="0.00"
+                      step="0.01"
+                      min="0"
+                      value={budget}
+                      onChange={(e) => setBudget(e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Description (optionnel):</label>
+                  <textarea
+                    placeholder="Description détaillée de la charge"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="form-textarea"
+                    rows="3"
+                  />
+                </div>
+                <div className="form-actions">
+                  <button
+                    onClick={handleSaveCharge}
+                    className="btn btn-primary"
+                    disabled={!selectedChargeType || !chargeName || !budget}
+                  >
+                    💾 Enregistrer la charge
+                  </button>
+                  <button onClick={resetForm} className="btn btn-secondary">
+                    🔄 Reset
+                  </button>
+                </div>
+              </>
+            )}
         </div>
       </div>
 
