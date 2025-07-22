@@ -20,7 +20,8 @@ const SalarieList = () => {
   const fetchSalaries = () => {
     setLoading(true);
     axios.get(`${process.env.REACT_APP_API_URL}/api/salaries`).then((res) => {
-      setSalaries(res.data);
+      // Ensure salaries is always an array
+      setSalaries(Array.isArray(res.data) ? res.data : []);
       setLoading(false);
     });
   };
