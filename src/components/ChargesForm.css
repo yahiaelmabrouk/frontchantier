@@ -150,8 +150,13 @@
 
 .summary-item.total {
   background: #007bff;
-  color: white;
+  color: #fff;
   font-weight: bold;
+}
+
+.summary-item.total .summary-amount,
+.summary-item.total .summary-type {
+  color: #fff;
 }
 
 .summary-type {
@@ -336,6 +341,65 @@
 .interim-list,
 .achat-list {
   margin-top: 10px;
+}
+
+.personnel-form {
+  background: #f7f7fb;
+  border-radius: 12px;
+  padding: 1.2rem 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07);
+}
+
+.personnel-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.personnel-list {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.personnel-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07);
+}
+
+.personnel-table th,
+.personnel-table td {
+  padding: 0.6rem 0.5rem;
+  text-align: left;
+}
+
+.personnel-table th {
+  background: #e3f2fd;
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.personnel-table tr:nth-child(even) {
+  background: #f9f9fc;
+}
+
+.personnel-table td {
+  color: #333;
+}
+
+.personnel-total {
+  text-align: right;
+  margin-top: 0.7rem;
+  font-weight: 600;
+  color: #667eea;
+  font-size: 1.1rem;
 }
 
 @media (max-width: 768px) {

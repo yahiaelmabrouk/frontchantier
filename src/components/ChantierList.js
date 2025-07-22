@@ -14,7 +14,8 @@ const ChantierList = () => {
   });
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("actifs");
-  const [dateFilter, setDateFilter] = useState(""); // Add this state
+  const [dateStart, setDateStart] = useState(""); // Start date filter
+  const [dateEnd, setDateEnd] = useState(""); // End date filter
   const [invoicePopup, setInvoicePopup] = useState({
     isOpen: false,
     chantier: null,
@@ -112,15 +113,29 @@ const ChantierList = () => {
     return matchesSearch;
   });
 
-  // Filter chantiers by date
-  const dateFilteredChantiers = dateFilter
-    ? filteredChantiers.filter(
-        (chantier) =>
-          chantier.dateCreation &&
-          new Date(chantier.dateCreation).toISOString().split("T")[0] ===
-            dateFilter
-      )
-    : filteredChantiers;
+  // Filter chantiers by date range
+  const dateFilteredChantiers =
+    dateStart || dateEnd
+      ? filteredChantiers.filter((chantier) => {
+          if (!chantier.dateCreation) return false;
+          const chantierDate = new Date(chantier.dateCreation).setHours(
+            0,
+            0,
+            0,
+            0
+          );
+          let afterStart = true,
+            beforeEnd = true;
+          if (dateStart) {
+            afterStart =
+              chantierDate >= new Date(dateStart).setHours(0, 0, 0, 0);
+          }
+          if (dateEnd) {
+            beforeEnd = chantierDate <= new Date(dateEnd).setHours(0, 0, 0, 0);
+          }
+          return afterStart && beforeEnd;
+        })
+      : filteredChantiers;
 
   // Pagination for active chantiers
   const activeChantiers = dateFilteredChantiers.filter(
@@ -171,23 +186,38 @@ const ChantierList = () => {
         </select>
       </div>
 
-      {/* Date Filter */}
+      {/* Date Range Filter */}
       <div className="chantier-controls">
         <label
-          htmlFor="date-filter"
+          htmlFor="date-start"
           style={{ fontWeight: 500, color: "#667eea" }}
         >
-          Filtrer par date de création :
+          Filtrer du :
         </label>
         <input
-          id="date-filter"
+          id="date-start"
           type="date"
           className="chantier-filter-select"
-          value={dateFilter}
+          value={dateStart}
           onChange={(e) => {
-            setDateFilter(e.target.value);
+            setDateStart(e.target.value);
             setCurrentPage(1);
           }}
+          style={{ minWidth: 0, width: "auto" }}
+        />
+        <label htmlFor="date-end" style={{ fontWeight: 500, color: "#667eea" }}>
+          au :
+        </label>
+        <input
+          id="date-end"
+          type="date"
+          className="chantier-filter-select"
+          value={dateEnd}
+          onChange={(e) => {
+            setDateEnd(e.target.value);
+            setCurrentPage(1);
+          }}
+          style={{ minWidth: 0, width: "auto" }}
         />
       </div>
 

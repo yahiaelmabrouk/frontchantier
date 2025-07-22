@@ -55,6 +55,11 @@
   background-size: 1.2em;
 }
 
+.chantier-controls input[type="date"] {
+  min-width: 130px;
+  width: auto;
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .chantier-controls {

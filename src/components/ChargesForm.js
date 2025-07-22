@@ -37,6 +37,14 @@ const ChargesForm = () => {
     prix: "",
     quantite: "",
   });
+  const [salaries, setSalaries] = useState([]);
+  const [fournisseurs, setFournisseurs] = useState([]);
+  const [personnelEntries, setPersonnelEntries] = useState([]);
+  const [personnelForm, setPersonnelForm] = useState({
+    salarieId: "",
+    heures: "",
+  });
+  const [personnelTotal, setPersonnelTotal] = useState(0);
 
   const chargeTypes = [
     "Achat",
@@ -52,6 +60,8 @@ const ChargesForm = () => {
   useEffect(() => {
     fetchChantier();
     fetchCharges();
+    fetchSalaries();
+    fetchFournisseurs();
   }, [id]);
 
   const fetchChantier = async () => {
@@ -71,6 +81,26 @@ const ChargesForm = () => {
       setCharges(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Erreur:", error);
+    }
+  };
+
+  const fetchSalaries = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/salaries`);
+      const data = await res.json();
+      setSalaries(Array.isArray(data) ? data : []);
+    } catch (e) {
+      setSalaries([]);
+    }
+  };
+
+  const fetchFournisseurs = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/fournisseurs`);
+      const data = await res.json();
+      setFournisseurs(Array.isArray(data) ? data : []);
+    } catch (e) {
+      setFournisseurs([]);
     }
   };
 
@@ -95,6 +125,7 @@ const ChargesForm = () => {
     setInterimForm({ nom: "", heures: "", taux: "" });
     setAchatsPieces([]);
     setAchatForm({ fournisseur: "", piece: "", prix: "", quantite: "" });
+    resetPersonnelForm();
   };
 
   // --- Services extérieurs handlers ---
@@ -165,6 +196,48 @@ const ChargesForm = () => {
   };
   const achatsTotal = achatsPieces.reduce((sum, p) => sum + p.total, 0);
 
+  const handlePersonnelFormChange = (e) => {
+    setPersonnelForm({
+      ...personnelForm,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const addPersonnelEntry = () => {
+    const salarie = salaries.find((s) => s._id === personnelForm.salarieId);
+    const heures = Number(personnelForm.heures);
+    // Prevent duplicate selection
+    if (
+      !salarie ||
+      !heures ||
+      heures <= 0 ||
+      personnelEntries.some((p) => p.salarieId === salarie._id)
+    )
+      return;
+    const total = salarie.tauxHoraire * heures;
+    setPersonnelEntries([
+      ...personnelEntries,
+      {
+        salarieId: salarie._id,
+        nom: salarie.nom,
+        tauxHoraire: salarie.tauxHoraire,
+        heures,
+        total,
+      },
+    ]);
+    setPersonnelForm({ salarieId: "", heures: "" });
+  };
+
+  useEffect(() => {
+    setPersonnelTotal(personnelEntries.reduce((sum, p) => sum + p.total, 0));
+  }, [personnelEntries]);
+
+  const resetPersonnelForm = () => {
+    setPersonnelEntries([]);
+    setPersonnelForm({ salarieId: "", heures: "" });
+    setPersonnelTotal(0);
+  };
+
   // --- Save Charge ---
   const handleSaveCharge = async () => {
     let newCharge;
@@ -195,6 +268,19 @@ const ChargesForm = () => {
         description,
         pieces: achatsPieces,
       };
+    } else if (selectedChargeType === "Charges de personnel") {
+      if (personnelEntries.length === 0) {
+        alert("Veuillez ajouter au moins un salarié.");
+        return;
+      }
+      newCharge = {
+        chantierId: id,
+        type: selectedChargeType,
+        name: "Charges de personnel",
+        budget: personnelTotal,
+        description,
+        personnel: personnelEntries,
+      };
     } else {
       if (!selectedChargeType || !chargeName || !budget) {
         alert("Veuillez remplir tous les champs obligatoires");
@@ -221,6 +307,7 @@ const ChargesForm = () => {
       if (response.ok) {
         fetchCharges();
         resetForm();
+        resetPersonnelForm();
       }
     } catch (error) {
       console.error("Erreur:", error);
@@ -247,6 +334,7 @@ const ChargesForm = () => {
     setInterimForm({ nom: "", heures: "", taux: "" });
     setAchatsPieces([]);
     setAchatForm({ fournisseur: "", piece: "", prix: "", quantite: "" });
+    resetPersonnelForm();
   };
 
   const deleteCharge = async (chargeId) => {
@@ -482,13 +570,20 @@ const ChargesForm = () => {
               <div className="achat-row">
                 <div className="form-group">
                   <label className="form-label">Nom du fournisseur</label>
-                  <input
-                    type="text"
+                  {/* Use select for fournisseur */}
+                  <select
                     name="fournisseur"
                     value={achatForm.fournisseur}
                     onChange={handleAchatFormChange}
                     className="form-input"
-                  />
+                  >
+                    <option value="">-- Sélectionner un fournisseur --</option>
+                    {fournisseurs.map((f) => (
+                      <option key={f._id} value={f.nom}>
+                        {f.nom}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Nom de pièce</label>
@@ -592,11 +687,108 @@ const ChargesForm = () => {
             </div>
           )}
 
+          {selectedChargeType === "Charges de personnel" && (
+            <div className="personnel-form">
+              <h4 className="subform-title">Détails Charges de personnel</h4>
+              <div className="personnel-row">
+                <div className="form-group">
+                  <label className="form-label">Salarié</label>
+                  <select
+                    name="salarieId"
+                    value={personnelForm.salarieId}
+                    onChange={handlePersonnelFormChange}
+                    className="form-input"
+                  >
+                    <option value="">-- Sélectionner --</option>
+                    {salaries
+                      .filter(
+                        (s) =>
+                          !personnelEntries.some((p) => p.salarieId === s._id)
+                      )
+                      .map((s) => (
+                        <option key={s._id} value={s._id}>
+                          {s.nom} (Matricule: {s.matricule})
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Nombre d'heures</label>
+                  <input
+                    type="number"
+                    name="heures"
+                    min="0"
+                    value={personnelForm.heures}
+                    onChange={handlePersonnelFormChange}
+                    className="form-input"
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  style={{ alignSelf: "end", marginTop: "24px" }}
+                  onClick={addPersonnelEntry}
+                  disabled={
+                    !personnelForm.salarieId ||
+                    !personnelForm.heures ||
+                    Number(personnelForm.heures) <= 0
+                  }
+                >
+                  + Ajouter salarié
+                </button>
+              </div>
+              {personnelEntries.length > 0 && (
+                <div className="personnel-list">
+                  <table className="personnel-table">
+                    <thead>
+                      <tr>
+                        <th>Nom</th>
+                        <th>Taux horaire (€)</th>
+                        <th>Heures</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {personnelEntries.map((p, idx) => (
+                        <tr key={idx}>
+                          <td>{p.nom}</td>
+                          <td>{p.tauxHoraire.toFixed(2)}</td>
+                          <td>{p.heures}</td>
+                          <td>{p.total.toFixed(2)} €</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="personnel-total">
+                    <strong>Total: </strong>
+                    <span>{personnelTotal.toFixed(2)} €</span>
+                  </div>
+                </div>
+              )}
+              <div className="form-actions">
+                <button
+                  onClick={handleSaveCharge}
+                  className="btn btn-primary"
+                  disabled={personnelEntries.length === 0}
+                >
+                  💾 Enregistrer la charge
+                </button>
+                <button
+                  onClick={resetPersonnelForm}
+                  className="btn btn-secondary"
+                >
+                  🔄 Ajouter un autre salarié
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Default form for other types */}
           {selectedChargeType &&
             selectedChargeType !== "Services extérieurs" &&
             selectedChargeType !== "Interim" &&
-            selectedChargeType !== "Achat" && (
+            selectedChargeType !== "Achat" &&
+            selectedChargeType !== "Charges de personnel" && (
               <>
                 <div className="form-row">
                   <div className="form-group">
